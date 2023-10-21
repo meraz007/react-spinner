@@ -1,47 +1,59 @@
 import Popup from "./Popup";
-import React, { useState } from "react";
+import React, { useState,Component  } from "react";
+import WheelComponent from 'react-wheel-of-prizes'
 
 function Spinner() {
-    const [result, setResult] = useState('')
-    const [spinning, setSpinning] = useState(false);
+    const [result, setResult] = useState(null)
     const [isPopupOpen, setPopupOpen] = useState(false);
-    const options = ["Rifat", "Miraj", "Saiful", "Zihan", "Farhan"];
 
+    const segments = [
+        'Saiful',
+        'Rimon',
+        'Miraz',
+        'Farhan',
+        'Fardin',
+    ];
+
+    const segColors = [
+        '#EE4040',
+        '#F0CF50',
+        '#815CD1',
+        '#3DA5E0',
+        '#34A24F',
+    ];
+
+    const onFinished = (winner) => {
+        console.log(winner)
+
+        setTimeout(() => {
+            setResult(winner)
+            setPopupOpen(true);
+        }, 1000);
+    }
+   
     const closePopup = () => {
         setPopupOpen(false);
     };
 
-    const spin = () => {
-        setSpinning(true);
-
-        setTimeout(() => {
-            const randomIndex = Math.floor(Math.random() * options.length);
-            setResult(options[randomIndex])
-            setPopupOpen(true);
-            setSpinning(false);
-        }, 3000);
-    };
-
     return (
         <>
-            <div className="text-center flex justify-center items-center h-screen">
-                <div className="flex flex-col">
-                    <button 
-                        onClick={spin}
-                        className="bg-blue-600 rounded py-2 px-12 text-white"
-                    >
-                        Spin It!
-                    </button>
+        <div className={`flex justify-center mt-20 ${isPopupOpen===true ? 'hidden': ''}`}>
+            <WheelComponent
+                segments={segments}
+                segColors={segColors}
+                onFinished={(winner) => onFinished(winner)}
+                primaryColor='black'
+                contrastColor='white'
+                buttonText='Spin'
+                isOnlyOnce={false}
+                size={290}
+                upDuration={100}
+                downDuration={1000}
+                fontFamily='Arial'
+            />
+        </div>
 
-                    {spinning && (
-                        <div className="relative flex items-center justify-center h-full">
-                            <div className="absolute top-10 animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <Popup result={result} isOpen={isPopupOpen} closePopup={closePopup} />
+        <Popup result={result} isOpen={isPopupOpen} closePopup={closePopup} />
         </>
     );
 }
